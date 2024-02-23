@@ -61,7 +61,7 @@ namespace test3
             intervalCheckBox = new CheckBox();
             intervalCheckBox.Text = "Activar Intervalo de Fecha";
             intervalCheckBox.CheckedChanged += ToggleIntervalFields;
-            intervalCheckBox.Location = new System.Drawing.Point(10, 90);
+            intervalCheckBox.Location = new System.Drawing.Point(10, 85);
             intervalCheckBox.Size = new System.Drawing.Size(155, 20);
             this.Controls.Add(intervalCheckBox);
 
@@ -127,7 +127,7 @@ namespace test3
 
             exportDataGridView = new Button();
             exportDataGridView.Text = "Crear CSV";
-            exportDataGridView.Location = new System.Drawing.Point(160, 140);
+            exportDataGridView.Location = new System.Drawing.Point(165, 140);
             exportDataGridView.Size = new System.Drawing.Size(150, 25);
             exportDataGridView.Click += ExportarCSV;
             this.Controls.Add(exportDataGridView);
