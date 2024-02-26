@@ -97,14 +97,14 @@ namespace test3
             this.Controls.Add(cleanDataGridButton);
 
             logoImage = new PictureBox();
-            logoImage.Image = Image.FromFile("C:\\Users\\Yamil\\Desktop\\Maquetados\\test3\\img\\logo.png");
+            logoImage.Image = Image.FromFile("img\\logo.png");
             logoImage.Size = new System.Drawing.Size(100, 40);
             logoImage.Location = new System.Drawing.Point(470, 15);
             logoImage.SizeMode = PictureBoxSizeMode.StretchImage;
             this.Controls.Add(logoImage);
 
             logoImage2 = new PictureBox();
-            logoImage2.Image = Image.FromFile("C:\\Users\\Yamil\\Desktop\\Maquetados\\test3\\img\\logo22.png");
+            logoImage2.Image = Image.FromFile("img\\logo22.png");
             logoImage2.Size = new System.Drawing.Size(50, 20);
             logoImage2.Location = new System.Drawing.Point(495, 50);
             logoImage2.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -211,7 +211,7 @@ namespace test3
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Size = new System.Drawing.Size(595, 620);
-            this.Icon = new System.Drawing.Icon("C:\\Users\\Yamil\\Desktop\\Maquetados\\test3\\1.ico");
+            this.Icon = new System.Drawing.Icon("img\\1.ico");
         }
 
         public void cleanDataGridView(object sender, EventArgs e)
@@ -256,14 +256,15 @@ namespace test3
                                CONVERT(VARCHAR, DATEADD(SECOND, 1, FechaRegistro), 120) as hora_sumada, 
                                ClaveNomina = 2
                         FROM {table}
-                        WHERE FechaRegistro BETWEEN '{startDate:yyyy-MM-dd HH:mm:ss.fff}' AND '{endDate:yyyy-MM-dd HH:mm:ss.fff}'";
+                        WHERE FechaRegistro BETWEEN '{startDate:yyyy-MM-dd HH:mm:ss.fff}' AND '{endDate:yyyy-MM-dd HH:mm:ss.fff}'
+                        ORDER BY FechaRegistro ASC";
                 }
                 else
                 {
                     sqlQuery = $@"
                          SELECT ID_Empleado, ID_Lector, FORMAT(FechaRegistro, 'yyyy-MM-dd HH:mm:ss.fff') as FechaRegistro, FORMAT(DATEADD(SECOND, 1, FechaRegistro), 'yyyy-MM-dd HH:mm:ss.fff') as hora_sumada, ClaveNomina = 2 
                 FROM {table} 
-                WHERE FechaRegistro >= DATEADD(HOUR, -24, GETDATE())";
+                WHERE FechaRegistro >= DATEADD(HOUR, -24, GETDATE()) ORDER BY FechaRegistro ASC";
                 }
 
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
