@@ -1,9 +1,9 @@
-﻿using System.Data.SqlClient;
-using System;
-using System.Windows.Forms;
+﻿using System;
+using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Drawing;
+using System.Windows.Forms;
 
 namespace test3
 {
@@ -11,8 +11,13 @@ namespace test3
     {
         private Label FechaInicio;
         private Label FechaFinal;
-        private TextBox startDateTimeTextBox;
-        private TextBox endDateTimeTextBox;
+        //private TextBox startDateTimeTextBox;
+        //private TextBox endDateTimeTextBox;
+
+        private DateTimePicker startDateTimePicker;
+        private DateTimePicker endDateTimePicker;
+
+
         private CheckBox intervalCheckBox;
         private TextBox serverTextBox;
         private TextBox databaseTextBox;
@@ -59,7 +64,7 @@ namespace test3
             this.Text = "YuraMIL Poll";
 
             intervalCheckBox = new CheckBox();
-            intervalCheckBox.Text = "Activar Intervalo de Fecha";
+            intervalCheckBox.Text = "Activate Date Range";
             intervalCheckBox.CheckedChanged += ToggleIntervalFields;
             intervalCheckBox.Location = new System.Drawing.Point(10, 85);
             intervalCheckBox.Size = new System.Drawing.Size(155, 20);
@@ -67,17 +72,20 @@ namespace test3
 
 
             FechaInicio = new Label();
-            FechaInicio.Text = "Fecha Inicio:";
-            FechaInicio.Location = new System.Drawing.Point(10, 115);
+            FechaInicio.Text = "Start Date:";
+            FechaInicio.Location = new System.Drawing.Point(40, 115);
             FechaInicio.Size = new System.Drawing.Size(70, 15);
             this.Controls.Add(FechaInicio);
 
             FechaFinal = new Label();
-            FechaFinal.Text = "Fecha Final:";
-            FechaFinal.Location = new System.Drawing.Point(220, 115);
+            FechaFinal.Text = "End Date:";
+            FechaFinal.Location = new System.Drawing.Point(285, 115);
             FechaFinal.Size = new System.Drawing.Size(65, 15);
             this.Controls.Add(FechaFinal);
+            
 
+
+            /*
             startDateTimeTextBox = new TextBox();
             startDateTimeTextBox.Enabled = false;
             startDateTimeTextBox.Location = new System.Drawing.Point(80, 112);
@@ -88,9 +96,28 @@ namespace test3
             endDateTimeTextBox.Enabled = false;
             endDateTimeTextBox.Location = new System.Drawing.Point(290, 112);
             this.Controls.Add(endDateTimeTextBox);
+            */
+
+            startDateTimePicker = new DateTimePicker();
+            startDateTimePicker.Format = DateTimePickerFormat.Custom;
+            startDateTimePicker.CustomFormat = "yyyy-MM-dd HH:mm:ss";
+            startDateTimePicker.Enabled = false;
+            startDateTimePicker.Location = new System.Drawing.Point(110, 112);
+            startDateTimePicker.Size = new System.Drawing.Size(150, 40);
+            this.Controls.Add(startDateTimePicker);
+
+            endDateTimePicker = new DateTimePicker();
+            endDateTimePicker.Format = DateTimePickerFormat.Custom;
+            endDateTimePicker.CustomFormat = "yyyy-MM-dd HH:mm:ss";
+            endDateTimePicker.Enabled = false;
+            endDateTimePicker.Location = new System.Drawing.Point(350, 112);
+            endDateTimePicker.Size = new System.Drawing.Size(150, 40);
+            this.Controls.Add(endDateTimePicker);
+            
+
 
             cleanDataGridButton = new Button();
-            cleanDataGridButton.Text = "Limpiar";
+            cleanDataGridButton.Text = "Clean";
             cleanDataGridButton.Click += cleanDataGridView;
             cleanDataGridButton.Location = new System.Drawing.Point(470, 140);
             cleanDataGridButton.Size = new System.Drawing.Size(100, 25);
@@ -111,9 +138,9 @@ namespace test3
             this.Controls.Add(logoImage2);
 
 
-            // Grid View
+            // ----------- Grid View -----------------------------------
             getDataButton = new Button();
-            getDataButton.Text = "Consultar Registros";
+            getDataButton.Text = "Get Data";
             getDataButton.Click += QueryAndGenerateCsv;
             getDataButton.Location = new System.Drawing.Point(10, 140);
             getDataButton.Size = new System.Drawing.Size(150, 25);
@@ -122,17 +149,45 @@ namespace test3
             dataGridView = new DataGridView();
             dataGridView.Location = new System.Drawing.Point(10, 170);
             dataGridView.Size = new System.Drawing.Size(560, 400);
+
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ToolStripMenuItem deleteMenuItem = new ToolStripMenuItem("Eliminar fila");
+            deleteMenuItem.Click += DeleteRowMenuItem_Click;
+            contextMenu.Items.Add(deleteMenuItem);
+            dataGridView.ContextMenuStrip = contextMenu;
+
+            //              DESING DATAGRIDVIEW
+            dataGridView.RowsDefaultCellStyle.BackColor = Color.White;
+            dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
+           
+
+            dataGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.DarkGray;
+            dataGridView.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView.ColumnHeadersDefaultCellStyle.Font = new Font(dataGridView.Font, FontStyle.Bold);
+
+            dataGridView.DefaultCellStyle.SelectionBackColor = Color.SteelBlue;
+            dataGridView.DefaultCellStyle.SelectionForeColor = Color.White;
+
+            dataGridView.BorderStyle = BorderStyle.None;
+            dataGridView.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dataGridView.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+
+            dataGridView.ScrollBars = ScrollBars.Both;
+
             dataGridView.ReadOnly = true;
             this.Controls.Add(dataGridView);
 
+            // ----------- Export Button --------------------------------
+
             exportDataGridView = new Button();
-            exportDataGridView.Text = "Crear CSV";
+            exportDataGridView.Text = "Create CSV";
             exportDataGridView.Location = new System.Drawing.Point(165, 140);
             exportDataGridView.Size = new System.Drawing.Size(150, 25);
             exportDataGridView.Click += ExportarCSV;
             this.Controls.Add(exportDataGridView);
 
-            // ServerConnection
+            // ---------- ServerConnection ----------------------------
 
             // SERVER TEXT BOX & LABEL
             serverText = new Label();
@@ -221,10 +276,33 @@ namespace test3
             dataGridView.Refresh();
         }
 
+        private void DeleteRowMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.SelectedRows.Count > 0)
+            {
+                DialogResult result = MessageBox.Show("Are You Sure Delete This Item?", "Confim Your Answer", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                
+                if(result == DialogResult.Yes)
+                {
+                    foreach (DataGridViewRow row in dataGridView.SelectedRows)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            dataGridView.Rows.Remove(row);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Select 1 Row: ", "Atention!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
         private void ToggleIntervalFields(object sender, EventArgs e)
         {
-            startDateTimeTextBox.Enabled = intervalCheckBox.Checked;
-            endDateTimeTextBox.Enabled = intervalCheckBox.Checked;
+            startDateTimePicker.Enabled = intervalCheckBox.Checked;
+            endDateTimePicker.Enabled = intervalCheckBox.Checked;
         }
 
         private void QueryAndGenerateCsv(object sender, EventArgs e)
@@ -244,46 +322,67 @@ namespace test3
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
 
-                connection.Open();
-
-                if (intervalCheckBox.Checked)
+                try
                 {
-                    DateTime startDate = DateTime.Parse(startDateTimeTextBox.Text);
-                    DateTime endDate = DateTime.Parse(endDateTimeTextBox.Text);
+                    connection.Open();
 
-                    sqlQuery = $@"
-                        SELECT ID_Empleado, ID_Lector, CONVERT(VARCHAR, FechaRegistro, 120) as FechaRegistro, 
-                               CONVERT(VARCHAR, DATEADD(SECOND, 1, FechaRegistro), 120) as hora_sumada, 
-                               ClaveNomina = 2
-                        FROM {table}
-                        WHERE FechaRegistro BETWEEN '{startDate:yyyy-MM-dd HH:mm:ss.fff}' AND '{endDate:yyyy-MM-dd HH:mm:ss.fff}'
-                        ORDER BY FechaRegistro ASC";
-                }
-                else
-                {
-                    sqlQuery = $@"
+                    if (intervalCheckBox.Checked)
+                    {
+                        DateTime startDate = DateTime.Parse(startDateTimePicker.Text);
+                        DateTime endDate = DateTime.Parse(endDateTimePicker.Text);
+
+                        sqlQuery = $@"
+                              SELECT 
+                                ID_Empleado, 
+                                ID_Lector, 
+                                FORMAT(FechaRegistro, 'yyyy-MM-dd HH:mm:ss.fff') as FechaRegistro, 
+                                FORMAT(DATEADD(SECOND, 1, FechaRegistro), 'yyyy-MM-dd HH:mm:ss.fff') as hora_sumada, 
+                                ClaveNomina = 2
+                              FROM {table}
+                                WHERE FechaRegistro BETWEEN '{startDate.ToString("yyyy-MM-dd HH:mm:ss")}' AND '{endDate.ToString("yyyy-MM-dd HH:mm:ss")}'
+                                ORDER BY [FechaRegistro] ASC
+                              ";
+
+
+                    }
+                    else
+                    {
+                        sqlQuery = $@"
                          SELECT ID_Empleado, ID_Lector, FORMAT(FechaRegistro, 'yyyy-MM-dd HH:mm:ss.fff') as FechaRegistro, FORMAT(DATEADD(SECOND, 1, FechaRegistro), 'yyyy-MM-dd HH:mm:ss.fff') as hora_sumada, ClaveNomina = 2 
                 FROM {table} 
                 WHERE FechaRegistro >= DATEADD(HOUR, -24, GETDATE()) ORDER BY FechaRegistro ASC";
-                }
+                    }
 
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                {
-                    dataGridView.Columns.Add("ID_Empleado", "ID Empleado");
-                    dataGridView.Columns.Add("ID_Lector", "ID Lector");
-                    dataGridView.Columns.Add("FechaRegistro", "Fecha de Registro");
-                    dataGridView.Columns.Add("hora_sumada", "Hora Sumada");
-                    dataGridView.Columns.Add("ClaveNomina", "Clave de Nómina");
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        while (reader.Read())
+                        dataGridView.Columns.Add("ID_Empleado", "ID Empleado");
+                        dataGridView.Columns["ID_Empleado"].Width = 85;
+                        dataGridView.Columns["ID_Empleado"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        dataGridView.Columns.Add("ID_Lector", "ID Lector");
+                        dataGridView.Columns["ID_Lector"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        dataGridView.Columns["ID_Lector"].Width = 67;
+                        dataGridView.Columns.Add("FechaRegistro", "Fecha de Registro");
+                        dataGridView.Columns["FechaRegistro"].Width = 130;
+                        dataGridView.Columns.Add("hora_sumada", "Hora Sumada");
+                        dataGridView.Columns["hora_sumada"].Width = 130;
+                        dataGridView.Columns.Add("ClaveNomina", "Clave de Nómina");
+                        dataGridView.Columns["ClaveNomina"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        dataGridView.Columns["ClaveNomina"].Width = 110;
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            dataGridView.Rows.Add(reader["ID_Empleado"], reader["ID_Lector"], reader["FechaRegistro"], reader["hora_sumada"], reader["ClaveNomina"]);
+                            while (reader.Read())
+                            {
+                                dataGridView.Rows.Add(reader["ID_Empleado"], reader["ID_Lector"], reader["FechaRegistro"], reader["hora_sumada"], reader["ClaveNomina"]);
+                            }
                         }
                     }
-                }
 
-                connection.Close();
+                    connection.Close();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show($"Error en el servidor: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
         }
