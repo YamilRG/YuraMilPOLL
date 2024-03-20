@@ -15,6 +15,7 @@ namespace test3
         public Form1()
         {
             InitializeComponent();
+            this.CenterToScreen();
         }
     }
 }

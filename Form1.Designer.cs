@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -17,7 +18,6 @@ namespace test3
         private DateTimePicker startDateTimePicker;
         private DateTimePicker endDateTimePicker;
 
-
         private CheckBox intervalCheckBox;
         private TextBox serverTextBox;
         private TextBox databaseTextBox;
@@ -35,6 +35,10 @@ namespace test3
         private Label usernameText;
         private Label passwordText;
         private Label tableText;
+
+        private Label counRegister;
+
+        private Label copyRigth;
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -61,6 +65,8 @@ namespace test3
         /// </summary>
         private void InitializeComponent()
         {
+
+
             this.Text = "YuraMIL Poll";
 
             intervalCheckBox = new CheckBox();
@@ -150,8 +156,11 @@ namespace test3
             dataGridView.Location = new System.Drawing.Point(10, 170);
             dataGridView.Size = new System.Drawing.Size(560, 400);
 
+            dataGridView.RowHeadersWidth = 20;
+
+
             ContextMenuStrip contextMenu = new ContextMenuStrip();
-            ToolStripMenuItem deleteMenuItem = new ToolStripMenuItem("Eliminar fila");
+            ToolStripMenuItem deleteMenuItem = new ToolStripMenuItem("Delete Row");
             deleteMenuItem.Click += DeleteRowMenuItem_Click;
             contextMenu.Items.Add(deleteMenuItem);
             dataGridView.ContextMenuStrip = contextMenu;
@@ -178,6 +187,14 @@ namespace test3
             dataGridView.ReadOnly = true;
             this.Controls.Add(dataGridView);
 
+            // contador de filas
+            counRegister = new Label();
+            counRegister.Location = new System.Drawing.Point(10, 575);
+            counRegister.Size = new System.Drawing.Size(150, 15);
+            this.Controls.Add(counRegister);
+
+
+
             // ----------- Export Button --------------------------------
 
             exportDataGridView = new Button();
@@ -197,7 +214,8 @@ namespace test3
             this.Controls.Add(serverText);
 
             serverTextBox = new TextBox();
-            serverTextBox.Text = "172.18.3.143";
+            //serverTextBox.Text = "172.18.0.62";
+            serverTextBox.Text = "172.18.0.62";
             serverTextBox.Location = new System.Drawing.Point(100, 10);
             serverTextBox.Enabled = false;
 
@@ -210,7 +228,7 @@ namespace test3
             this.Controls.Add(databaseText);
 
             databaseTextBox = new TextBox();
-            databaseTextBox.Text = "IVMS2";
+            databaseTextBox.Text = "IVMS";
             databaseTextBox.Location = new System.Drawing.Point(100, 32);
             databaseTextBox.Enabled = false;
 
@@ -223,7 +241,8 @@ namespace test3
             this.Controls.Add(usernameText);
 
             usernameTextBox = new TextBox();
-            usernameTextBox.Text = "yura";
+            usernameTextBox.Text = "YuraAtt";
+            //usernameTextBox.Text = "yura";
             usernameTextBox.Location = new System.Drawing.Point(100, 55);
             usernameTextBox.Enabled = false;
 
@@ -236,7 +255,8 @@ namespace test3
             this.Controls.Add(passwordText);
 
             passwordTextBox = new TextBox();
-            passwordTextBox.Text = "mxyura871.";
+            passwordTextBox.Text = "Mxyura871!";
+            //passwordTextBox.Text = "mxyura871.";
             passwordTextBox.Location = new System.Drawing.Point(290, 10);
             passwordTextBox.PasswordChar = '*';
             passwordTextBox.Enabled = false;
@@ -250,7 +270,7 @@ namespace test3
             this.Controls.Add(tableText);
 
             tableTextBox = new TextBox();
-            tableTextBox.Text = "lerdo";
+            tableTextBox.Text = "Asistencia";
             tableTextBox.Location = new System.Drawing.Point(290, 32);
             tableTextBox.Enabled = false;
 
@@ -262,10 +282,17 @@ namespace test3
             this.Controls.Add(tableTextBox);
 
 
+            copyRigth = new Label();
+            copyRigth.Location = new System.Drawing.Point(450, 580);
+            copyRigth.Text = "© Ing.Eduardo Yamil Ramírez García 2024";
+            copyRigth.Size = new System.Drawing.Size(125, 10);
+            copyRigth.Font = new Font("Arial", 4, FontStyle.Bold);
+            this.Controls.Add(copyRigth);
+
             // Generacion de Componenete
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Size = new System.Drawing.Size(595, 620);
+            this.Size = new System.Drawing.Size(595, 635);
             this.Icon = new System.Drawing.Icon("img\\1.ico");
         }
 
@@ -276,11 +303,20 @@ namespace test3
             dataGridView.Refresh();
         }
 
+
+        private void UpdateLabelCountRows()
+        {
+            counRegister.Text = "Total: " + (dataGridView.RowCount - 1) + " Check's";
+        }
+
         private void DeleteRowMenuItem_Click(object sender, EventArgs e)
         {
             if (dataGridView.SelectedRows.Count > 0)
             {
-                DialogResult result = MessageBox.Show("Are You Sure Delete This Item?", "Confim Your Answer", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DataGridViewRow selectedRow = dataGridView.SelectedRows[0];
+                string valueTableRow = selectedRow.Cells["ID_Empleado"].Value.ToString();
+
+                DialogResult result = MessageBox.Show("Are you sure to DELETE: '" + valueTableRow + "'?", "Delete Item", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 
                 if(result == DialogResult.Yes)
                 {
@@ -289,15 +325,23 @@ namespace test3
                         if (!row.IsNewRow)
                         {
                             dataGridView.Rows.Remove(row);
+
+                            MessageBox.Show("ROW DELETED " + "'" + valueTableRow + "'", "SUCCESSFULL", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            UpdateLabelCountRows();
                         }
                     }
-                }
-                else
+                } else
                 {
-                    MessageBox.Show("Select 1 Row: ", "Atention!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Operation Canceled", "FAILED", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            else
+            {
+                MessageBox.Show("I'M NOT A FORTUNE TALLER, PLEASE SELECT A ROW ", "ATENTION!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
+
+
 
         private void ToggleIntervalFields(object sender, EventArgs e)
         {
@@ -307,9 +351,9 @@ namespace test3
 
         private void QueryAndGenerateCsv(object sender, EventArgs e)
         {
+            
 
             cleanDataGridView(sender, e);
-
             string server = serverTextBox.Text;
             string database = databaseTextBox.Text;
             string username = usernameTextBox.Text;
@@ -349,8 +393,10 @@ namespace test3
                     {
                         sqlQuery = $@"
                          SELECT ID_Empleado, ID_Lector, FORMAT(FechaRegistro, 'yyyy-MM-dd HH:mm:ss.fff') as FechaRegistro, FORMAT(DATEADD(SECOND, 1, FechaRegistro), 'yyyy-MM-dd HH:mm:ss.fff') as hora_sumada, ClaveNomina = 2 
-                FROM {table} 
-                WHERE FechaRegistro >= DATEADD(HOUR, -24, GETDATE()) ORDER BY FechaRegistro ASC";
+                            FROM {table} 
+                            WHERE FechaRegistro >= DATEADD(HOUR, -24, GETDATE())
+                            ORDER BY FechaRegistro ASC
+                            ";
                     }
 
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
@@ -360,7 +406,7 @@ namespace test3
                         dataGridView.Columns["ID_Empleado"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                         dataGridView.Columns.Add("ID_Lector", "ID Lector");
                         dataGridView.Columns["ID_Lector"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        dataGridView.Columns["ID_Lector"].Width = 67;
+                        dataGridView.Columns["ID_Lector"].Width = 68;
                         dataGridView.Columns.Add("FechaRegistro", "Fecha de Registro");
                         dataGridView.Columns["FechaRegistro"].Width = 130;
                         dataGridView.Columns.Add("hora_sumada", "Hora Sumada");
@@ -377,6 +423,8 @@ namespace test3
                         }
                     }
 
+                    UpdateLabelCountRows();
+                    
                     connection.Close();
                 }
                 catch(Exception ex)
@@ -384,7 +432,6 @@ namespace test3
                     MessageBox.Show($"Error en el servidor: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
         }
 
         private void ExportarCSV(object sender, EventArgs e)
@@ -424,7 +471,7 @@ namespace test3
 
                     }
                 }
-                MessageBox.Show("Datos Exportados a: " + filepath, "Exportacion Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("CSV CREATED: " + filepath, "FILE SAVED", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
