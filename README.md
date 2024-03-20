@@ -1,23 +1,26 @@
-# YURAMIL POLL
+# Yuramil Poll
+Yuramil Poll Manager es una aplicación diseñada para facilitar la consulta y generación de informes sobre los registros realizados en un reloj checador. 
+La aplicación está integrada con una base de datos que almacena los registros de manera sincronizada con el reloj checador, lo que garantiza la precisión y la integridad de los datos.
 
-ESTA APLICACION CONSISTE EN CONSULTAR LA CANTIDAD DE REGISTROS REALIZADOS EN UN RELOJ CHECADOR LOS CUALES SE
-ALMACENAN EN UNA BASE DE DATOS DENTRO DE LA MISMA RED DEL CHECADOR, AMBOS ESTAN SINCRONIZADOS Y AMBOS ALMACENAN
-LA CANTIDAD DE REGISTROS REALIZADA.
+#Características principales:
+Consulta de registros: 
+Permite consultar la cantidad de registros realizados en un reloj checador en un período de tiempo específico. 
+Los usuarios pueden seleccionar un intervalo de fechas, que puede ser desde las últimas 24 horas hasta varios años, 
+según sus necesidades.
 
-EL OBJETIVO DE LA APLICACION ES REALIZAR UNA CONSULTA A ESTA BASE DE DATOS Y GENERAR UN REPORTE,
-DICHO REPORTE TIENE UN FORMATO DE 24 HORAS, QUIERE DECIR QUE CONSULTA LOS REGISTROS HECHOS
-EN 24 HORAS, PERO TAMBIEN TIENE UNA OPCION PARA CONSULTAR EN UN INTERVALO DE FECHA.
-POR EJEMPLO CONSULTAR LOS REGISTROS REALIZADOS EN 2 DIAS, 1 SEMANA, 1 MES, 1 AÑO O EN N CANTIDAD DE AÑOS.
+Generación de informes: 
+Los registros consultados se presentan en un formato de 24 horas en un grid dentro de la aplicación. 
+Además, los usuarios tienen la opción de eliminar registros individualmente con un clic derecho o seleccionar varios 
+registros para eliminarlos simultáneamente.
 
-ESTE REPORTE ES LLENADO EN UN GRID AL MOMENTO DE REALIZAR LA CONSULTA, EL GRID TIENE OPCIONES DE ELIMINAR UN
-REGISTRO CON CLICK DERECHO Y ELIMINAR, O SELECCIONAR VARIOS CON CRTL + CLICK IZQUIERDO Y ELIMINAR CON LA
-MISMA OPCION. 
+Limpieza de datos: 
+El grid cuenta con un botón superior para limpiar completamente los registros en caso de errores o duplicación de datos. 
+Esto asegura la precisión de los informes generados y evita la redundancia de datos.
 
-EL GRID CUENTA CON UN BOTON SUPERIOR PARA LIMPIARLO COMPLETAMENTE EN CASO DE EQUIVOCARNNOS
-AL REALIZAR UNA CONSULTA SE CARGA EL GRID NUEVAMENTE PARA EVITAR QUE SE DUPLIQUEN LOS DATOS O SE REPITAN.
+Exportación de informes: 
+Los informes generados pueden ser exportados a archivos CSV, los cuales están formateados de manera compatible con el software TRESS 
+para una fácil integración y análisis de datos.
 
-NUESTRO REPORTE PUEDE SER EXPORTADO EN ARCHIVO CSV, DICHO ARCHIVO CUENTA CON EL FORMATO ADECUADO PARA
-QUE FUNCIONE EN EL SOFTWARE TRESS, ES TOTALMENTE COMPATIBLE.
-
+Yuramil Poll proporciona una solución eficiente y fácil de usar para la gestión de registros de relojes checadores, ayudando a las organizaciones a mantener un control preciso del tiempo de sus empleados.
 
  //   © Ing.Eduardo Yamil Ramírez Garcia 2023
