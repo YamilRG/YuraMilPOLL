@@ -1,4 +1,4 @@
-# Yuramil Poll
+# YuraMil Poll
 Yuramil Poll Manager es una aplicación diseñada para facilitar la consulta y generación de informes sobre los registros realizados en un reloj checador. 
 La aplicación está integrada con una base de datos que almacena los registros de manera sincronizada con el reloj checador, lo que garantiza la precisión y la integridad de los datos.
 
