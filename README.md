@@ -1,5 +1,5 @@
-Yuramil Poll Manager
-Yuramil Poll Manager es una aplicación desarrollada en .NET Windows Forms diseñada para facilitar la consulta y generación de informes 
+Yuramil Poll 
+Yuramil Poll es una aplicación desarrollada en .NET Windows Forms diseñada para facilitar la consulta y generación de informes 
 sobre los registros realizados en un reloj checador. La aplicación está integrada con una base de datos que almacena los registros de manera sincronizada 
 con el reloj checador, garantizando la precisión y la integridad de los datos.
 
